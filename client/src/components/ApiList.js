@@ -18,13 +18,44 @@ class AppList extends React.Component {
     this.state = {
 		users: [],
 		isLoading: true,
-		isHovered: true, message: "", hover: false,
-		errors: null
+		isHovered: true, 
+		message: "", 
+		hover: false,
+		active: '',
+		errors: null,
+		myClass:''
     };
-	 this.onchange=this.onChange.bind(this)
+	
+	//this.onClick=this.onClick.bind(this);
+	this.onMouseEnter=this.onMouseEnter.bind(this);
  }
-
-  
+  /*  onClick(event){
+	 const clickedId = event.target.id
+	 console.log(clickedId);
+	 if(this.state.active === clickedId) { 
+          this.setState({active: ''});
+      } else {
+          this.setState({active: clickedId})
+     }
+	}*/
+	onMouseEnter(event){
+	const clickedId = event.target.id
+	 if(this.state.active === clickedId) { 
+          this.setState({active: ''});
+		} else {
+          this.setState({active: clickedId})
+		}
+	}
+	
+	/*onMouseLeave(event){
+	const clickedId = event.target.id
+	if(this.state.active === clickedId) { 
+	this.setState({active: clickedId})
+          
+      } else {
+          this.setState({active: ''});
+     }
+	}*/
  componentDidMount() {
    axios
     .get("new.json")
@@ -49,24 +80,10 @@ class AppList extends React.Component {
     })
     .catch(error => this.setState({ error, isLoading: false,isHovered: false }));
 	
-	}
-    onMouseEnter(e) {
-	    //this.setState({message: 'Mouse Enter'})
-		 this.setState({ hover: true });
-    }
-    onMouseLeave(e) {
-		this.setState({ hover: false });
-	 //this.setState({message: 'Mouse Leave'})
-	 //e.target.style.background = 'red';
-	 
-	}	
-  
-onChange(e) {
-    this.setState({
-        username: e.target.value
-    })
-	e.target.style.background = 'red';
 }
+    	
+  
+
   render() {
   const { isLoading, users } = this.state;
   return (
@@ -78,17 +95,11 @@ onChange(e) {
             const { id,apptitle,icon,description,username,intro,guide,reference} = user;
 			
             return (
-                <div className="col-sm-6 py-2 col-lg-4">
+                <div className={`col-sm-6 py-2 col-lg-4`} onMouseEnter={this.onMouseEnter} id = {id} >
 			        
-					<div className={`card h-100 ${this.state.hover ? 'shadow-lg' : ''}`}  onMouseEnter={() => this.onMouseEnter(this)} 
-					 onMouseLeave={() => this.onMouseLeave(this)} data-id = {id}>
-					
-					
-					<div 
-					className={`card-body `}  
-					 >
+				<div className={`card h-100  ${this.state.active === id ? 'shadow-lg bg-white rounded': ''}`}  >
+					    <div className={`card-body `} >
 				            <h5 className="card-title text-dark">< i className={icon}></i>  {apptitle}</h5>
-							
 							 <p className="card-text text-muted">{description}</p> 
 						</div>  
 						<div className="card-detail mx-3 ">
@@ -101,7 +112,6 @@ onChange(e) {
 							</ul>
 						</div>
 					</div>
-					
 				</div>
             );
           })
